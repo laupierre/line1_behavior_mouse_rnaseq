@@ -36,5 +36,8 @@ colnames (a) <- gsub ("star.IIT_", "", colnames (a))
 pheno <- data.frame (sample=c("RNT_1623", "RNT_1636", "RNT_1637", "RNT_1638", "RNT_1971", "RNT_1972", "RNT_1973",
             "RNT_1627", "RNT_1628", "RNT_1629", "RNT_1631", "RNT_1962", "RNT_1966", "RNT_1950",
             "RNT_1616", "RNT_1617", "RNT_1618", "RNT_1622", "RNT_1947", "RNT_1949", "RNT_1952"))
+            
+pheno$genotype <- c(rep ("FR", 7), rep ("ST", 7), rep ("OR", 7))
+
 
 
