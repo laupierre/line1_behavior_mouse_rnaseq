@@ -57,6 +57,8 @@ pheno <- pheno[idx, ]
 
 stopifnot (colnames (a) == pheno$sample)
 
+
+
 counts <- a
 
 dds <- DESeqDataSetFromMatrix(countData = round (counts), colData = pheno, design = ~ genotype)
@@ -80,6 +82,9 @@ res <- res[order (res$padj), ]
 
 write.xlsx (res, "striatum_deseq2_STvsFR_differential_expression.xlsx", rowNames=F)
 
+boxplot (res$log2FoldChange)
+abline (h=0)
+
 
 
 # second contrast of interest (OR vs FR)
@@ -94,7 +99,8 @@ res <- res[order (res$padj), ]
 
 write.xlsx (res, "striatum_deseq2_ORvsFR_differential_expression.xlsx", rowNames=F)
 
-
+boxplot (res$log2FoldChange)
+abline (h=0)
 
 
 
