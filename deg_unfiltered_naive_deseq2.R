@@ -22,8 +22,18 @@ a <- a[ ,grep ("gene_type.y|gene_name.y", colnames (a), invert=TRUE)]
 colnames (a) [colnames (a) == "gene_name.x"] <- "gene_name"
 colnames (a) [colnames (a) == "gene_type.x"] <- "gene_type"
 
-colnames (a) <- gsub ("star.IIT_", "", colnames (a))
 #write.xlsx (a, "star_gene_raw_counts.xlsx", rowNames=F)
+
+
+annot <- a
+annot <- annot[ ,c("Geneid", "gene_name", "gene_type", "mgi_id", "external_gene_name", "description")]
+
+
+torm <- c("gene_name", "gene_type", "mgi_id", "external_gene_name", "description")
+a <- a[ ,!colnames (a) %in% torm]
+row.names (a) <- a[ ,1]
+colnames (a) <- gsub ("star.IIT_", "", colnames (a))
+a <- a[ ,-1]
 
 
 
@@ -38,6 +48,60 @@ pheno <- data.frame (sample=c("RNT_1623", "RNT_1636", "RNT_1637", "RNT_1638", "R
             "RNT_1616", "RNT_1617", "RNT_1618", "RNT_1622", "RNT_1947", "RNT_1949", "RNT_1952"))
             
 pheno$genotype <- c(rep ("FR", 7), rep ("ST", 7), rep ("OR", 7))
+
+
+a <- a[ ,colnames (a) %in% pheno$sample]
+
+idx <- match (colnames (a), pheno$sample)
+pheno <- pheno[idx, ]
+
+stopifnot (colnames (a) == pheno$sample)
+
+counts <- a
+
+dds <- DESeqDataSetFromMatrix(countData = round (counts), colData = pheno, design = ~ genotype)
+                                 
+# keep <- rowSums(counts(dds)) >= 50
+keep <- rowSums(counts(dds) >= 50) >= dim (counts)[2]/2
+dds <- dds[keep,]
+dds
+
+# first contrast of interest (ST vs FR)
+dds <- DESeq(dds)
+resultsNames(dds)
+
+res <- results(dds, contrast=list("genotype_ST_vs_FR"))
+
+res <- merge (data.frame (res), counts (dds), by="row.names")
+#res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+colnames (res)[1] <- "Geneid"
+res <- res[order (res$padj), ]
+
+write.xlsx (res, "striatum_deseq2_STvsFR_differential_expression.xlsx", rowNames=F)
+
+
+
+# second contrast of interest (OR vs FR)
+
+res <- results(dds, contrast=list("genotype_OR_vs_FR"))
+
+res <- merge (data.frame (res), counts (dds), by="row.names")
+#res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+colnames (res)[1] <- "Geneid"
+res <- res[order (res$padj), ]
+
+write.xlsx (res, "striatum_deseq2_ORvsFR_differential_expression.xlsx", rowNames=F)
+
+
+
+
+
+
+
+
+
 
 
 
