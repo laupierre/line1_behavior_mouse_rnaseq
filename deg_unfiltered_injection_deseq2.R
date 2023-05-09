@@ -59,3 +59,71 @@ pheno <- pheno[idx, ]
 stopifnot (colnames (a) == pheno$sample)
 
 
+
+counts <- a
+
+dds <- DESeqDataSetFromMatrix(countData = round (counts), colData = pheno, design = ~ genotype)
+                                 
+# keep <- rowSums(counts(dds)) >= 50
+keep <- rowSums(counts(dds) >= 50) >= dim (counts)[2]/2
+dds <- dds[keep,]
+dds
+
+
+# first contrast of interest (OTL1 vs OTCTRL)
+dds <- DESeq(dds)
+resultsNames(dds)
+
+res <- results(dds, contrast=list("genotype_OTL1_vs_OTCTRL"))
+
+res <- merge (data.frame (res), counts (dds), by="row.names")
+#res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+colnames (res)[1] <- "Geneid"
+res <- res[order (res$padj), ]
+
+write.xlsx (res, "striatum_deseq2_OTL1vsOTCTRL_injection_differential_expression.xlsx", rowNames=F)
+
+boxplot (res$log2FoldChange)
+abline (h=0)
+
+
+
+# second contrast of interest (STCTRL_vs_OTCTRL)
+
+rm (res)
+res <- results(dds, contrast=list("genotype_STCTRL_vs_OTCTRL"))
+
+res <- merge (data.frame (res), counts (dds), by="row.names")
+#res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+colnames (res)[1] <- "Geneid"
+res <- res[order (res$padj), ]
+
+write.xlsx (res, "striatum_deseq2_STCTRLvsOTCTRL_injection_differential_expression.xlsx", rowNames=F)
+
+boxplot (res$log2FoldChange)
+abline (h=0)
+
+
+
+## PCA plot
+
+vsd <- vst(dds, blind=FALSE)
+pcaData <- plotPCA(vsd, intgroup=c("genotype"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+
+ggplot(pcaData, aes(PC1, PC2, color=genotype, shape=genotype)) +
+  		geom_point(size=3) +
+  		xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  		ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+		coord_fixed ()
+
+ggsave ("PCA plot injection experiment.pdf")
+
+
+
+
+
+
+
