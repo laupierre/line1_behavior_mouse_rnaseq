@@ -117,6 +117,9 @@ ggplot(pcaData, aes(PC1, PC2, color=genotype, shape=genotype)) +
   		ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
 		coord_fixed ()
 
+ggsave ("PCA plot naive experiment.pdf")
+
+
 
 
 
