@@ -40,9 +40,8 @@ dds <- DESeq(dds)
 resultsNames(dds)
 
 res <- results(dds, contrast=list("genotype_ST_vs_FR"))
-res$Geneid <- row.names (res)
 res <- data.frame (res[order (res$padj), ])
-colnames (res)[1] <- "Geneid"
+res$Geneid <- row.names (res)
 
 write.xlsx (res, "striatum_deseq2_STvsFR_differential_expression_wgcna_pipeline.xlsx", rowNames=F)
 
@@ -57,9 +56,8 @@ rm (res)
 res <- results(dds, contrast=list("genotype_OR_vs_FR"))
 
 res <- merge (data.frame (res), counts (dds), by="row.names")
-res$Geneid <- row.names (res)
 res <- data.frame (res[order (res$padj), ])
-colnames (res)[1] <- "Geneid"
+res$Geneid <- row.names (res)
 
 write.xlsx (res, "striatum_deseq2_ORvsFR_differential_expression_wgcna_pipeline.xlsx", rowNames=F)
 
