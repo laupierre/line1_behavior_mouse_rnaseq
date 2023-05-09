@@ -123,12 +123,26 @@ ggsave ("PCA plot naive experiment.pdf")
 
 ## Comparison with previous WGCNA based pipeline
 
-prev <- read.xlsx ("/Volumes/texas/iit_projects/tonini_version2/striatum_deseq2_ORvsFR_differential_expression_wgcna_pipeline.xlsx")
-prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
-plot (prev$logFC.x, prev$logFC.y, col=ifelse (prev$adj.P.Val.x < 0.05 & prev$adj.P.Val.y < 0.05, "darkblue", "black"), xlab="new_pipe_limma", ylab="prev_pipe_limma")
+prev <- read.xlsx ("/Volumes/texas/iit_projects/tonini_version2/striatum_deseq2_STvsFR_differential_expression_wgcna_pipeline.xlsx")
+prev <- merge (resa, prev, by.x="gene_name", by.y="Geneid")
+plot (prev$log2FoldChange.x, prev$log2FoldChange.y, col=ifelse (prev$padj.x < 0.05 & prev$padj.y < 0.05, "darkblue", "black"), xlab="new_pipe_limma", ylab="prev_pipe_limma")
 abline (h=0)
 abline (v=0)
-cor (prev$logFC.x, prev$logFC.y, method="pearson")
+abline (0,1)
+
+cor (prev$log2FoldChange.x, prev$log2FoldChange.y, method="pearson")
+# 0.99
+
+
+prev <- read.xlsx ("/Volumes/texas/iit_projects/tonini_version2/striatum_deseq2_ORvsFR_differential_expression_wgcna_pipeline.xlsx")
+prev <- merge (resb, prev, by.x="gene_name", by.y="Geneid")
+plot (prev$log2FoldChange.x, prev$log2FoldChange.y, col=ifelse (prev$padj.x < 0.05 & prev$padj.y < 0.05, "darkblue", "black"), xlab="new_pipe_limma", ylab="prev_pipe_limma")
+abline (h=0)
+abline (v=0)
+abline (0,1)
+
+cor (prev$log2FoldChange.x, prev$log2FoldChange.y, method="pearson")
+# 0.99
 
 
 
