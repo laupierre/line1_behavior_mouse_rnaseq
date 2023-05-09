@@ -120,6 +120,11 @@ ggplot(pcaData, aes(PC1, PC2, color=genotype, shape=genotype)) +
 ggsave ("PCA plot naive experiment.pdf")
 
 
+## Comparison with previous WGCNA based pipeline
+
+
+
+
 
 
 
