@@ -78,7 +78,7 @@ res <- merge (data.frame (res), counts (dds), by="row.names")
 #res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
 res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
 colnames (res)[1] <- "Geneid"
-res <- res[order (res$padj), ]
+res <- resa <- res[order (res$padj), ]
 
 write.xlsx (res, "striatum_deseq2_STvsFR_differential_expression.xlsx", rowNames=F)
 
@@ -95,7 +95,7 @@ res <- merge (data.frame (res), counts (dds), by="row.names")
 #res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
 res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
 colnames (res)[1] <- "Geneid"
-res <- res[order (res$padj), ]
+res <- resb <- res[order (res$padj), ]
 
 write.xlsx (res, "striatum_deseq2_ORvsFR_differential_expression.xlsx", rowNames=F)
 
@@ -120,7 +120,15 @@ ggplot(pcaData, aes(PC1, PC2, color=genotype, shape=genotype)) +
 ggsave ("PCA plot naive experiment.pdf")
 
 
+
 ## Comparison with previous WGCNA based pipeline
+
+prev <- read.xlsx ("/Volumes/texas/iit_projects/tonini_version2/striatum_deseq2_ORvsFR_differential_expression_wgcna_pipeline.xlsx")
+prev <- merge (res, prev, by.x="gene_name", by.y="Geneid")
+plot (prev$logFC.x, prev$logFC.y, col=ifelse (prev$adj.P.Val.x < 0.05 & prev$adj.P.Val.y < 0.05, "darkblue", "black"), xlab="new_pipe_limma", ylab="prev_pipe_limma")
+abline (h=0)
+abline (v=0)
+cor (prev$logFC.x, prev$logFC.y, method="pearson")
 
 
 
