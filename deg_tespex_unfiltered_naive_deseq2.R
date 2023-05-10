@@ -123,10 +123,11 @@ res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gen
 }
 }
 
-write.xlsx (res, "striatum_deseq2_STvsFR_differential_expression.xlsx", rowNames=F)
+write.xlsx (res, "striatum_deseq2_tespex_STvsFR_differential_expression.xlsx", rowNames=F)
 
 boxplot (res$log2FoldChange)
 abline (h=0)
+
 
 
 
@@ -136,11 +137,24 @@ res <- results(dds, contrast=list("genotype_OR_vs_FR"))
 
 res <- merge (data.frame (res), counts (dds), by="row.names")
 #res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
-res <- merge (res, annot, by.x="Row.names", by.y="Geneid")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid", all.x=TRUE)
 colnames (res)[1] <- "Geneid"
-res <- resb <- res[order (res$padj), ]
+res <- resa <- res[order (res$padj), ]
 
-write.xlsx (res, "striatum_deseq2_ORvsFR_differential_expression.xlsx", rowNames=F)
+idx2 <- which (is.na (res$external_gene_name))
+res$external_gene_name [idx2] <- res$Geneid[is.na (res$external_gene_name)]
+res$gene_name [idx2] <- res$Geneid[idx2]
+res$gene_type [idx2] <- "transposon"
+
+for (i in (1:dim (res)[1])) {
+if (res$gene_type[i] == "transposon") {
+print (res$gene_name[i])
+#res$description[i] <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
+res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
+}
+}
+
+write.xlsx (res, "striatum_deseq2_tespex_ORvsFR_differential_expression.xlsx", rowNames=F)
 
 boxplot (res$log2FoldChange)
 abline (h=0)
