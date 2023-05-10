@@ -159,6 +159,35 @@ abline (h=0)
 
 
 
+# third contrast from the two previous contrats, using the list() style of contrasts !!!
+
+res <- results(dds, contrast=list("genotype_OR_vs_FR", "genotype_ST_vs_FR"))     ## this is equivalent to OR/ST
+
+res <- merge (data.frame (res), counts (dds), by="row.names")
+#res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid", all.x=TRUE)
+colnames (res)[1] <- "Geneid"
+res <- resb <- res[order (res$padj), ]
+
+idx2 <- which (is.na (res$external_gene_name))
+res$external_gene_name [idx2] <- res$Geneid[is.na (res$external_gene_name)]
+res$gene_name [idx2] <- res$Geneid[idx2]
+res$gene_type [idx2] <- "transposon"
+
+for (i in (1:dim (res)[1])) {
+if (res$gene_type[i] == "transposon") {
+#print (res$gene_name[i])
+res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
+}
+}
+
+write.xlsx (res, "striatum_deseq2_tespex_ORvsST_differential_expression.xlsx", rowNames=F)
+
+boxplot (res$log2FoldChange)
+abline (h=0)
+
+
+
 
 ## PCA plot
 
