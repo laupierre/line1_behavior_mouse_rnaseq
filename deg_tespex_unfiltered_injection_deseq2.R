@@ -89,6 +89,96 @@ tesp <- tesp[ , idx]
 stopifnot (colnames (tesp) == pheno$sample)
 
 
+counts <- rbind (a, tesp)
+
+dds <- DESeqDataSetFromMatrix(countData = round (counts), colData = pheno, design = ~ genotype)
+                                 
+# keep <- rowSums(counts(dds)) >= 50
+keep <- rowSums(counts(dds) >= 50) >= dim (counts)[2]/2
+dds <- dds[keep,]
+dds
+
+
+# first contrast of interest (OTL1 vs OTCTRL)
+dds <- DESeq(dds)
+resultsNames(dds)
+
+res <- results(dds, contrast=list("genotype_OTL1_vs_OTCTRL"))
+
+res <- merge (data.frame (res), counts (dds), by="row.names")
+#res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid", all.x=TRUE)
+colnames (res)[1] <- "Geneid"
+res <- resa <- res[order (res$padj), ]
+
+idx2 <- which (is.na (res$external_gene_name))
+res$external_gene_name [idx2] <- res$Geneid[is.na (res$external_gene_name)]
+res$gene_name [idx2] <- res$Geneid[idx2]
+res$gene_type [idx2] <- "transposon"
+
+for (i in (1:dim (res)[1])) {
+if (res$gene_type[i] == "transposon") {
+#print (res$gene_name[i])
+res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
+}
+}
+
+write.xlsx (res, "striatum_deseq2_tespex_OTL1vsOTCTRL_injection_differential_expression.xlsx", rowNames=F)
+
+boxplot (res$log2FoldChange)
+abline (h=0)
+
+
+
+# second contrast of interest (STCTRL_vs_OTCTRL)
+
+rm (res)
+res <- results(dds, contrast=list("genotype_STCTRL_vs_OTCTRL"))
+
+res <- merge (data.frame (res), counts (dds), by="row.names")
+#res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
+res <- merge (res, annot, by.x="Row.names", by.y="Geneid", all.x=TRUE)
+colnames (res)[1] <- "Geneid"
+res <- resa <- res[order (res$padj), ]
+
+idx2 <- which (is.na (res$external_gene_name))
+res$external_gene_name [idx2] <- res$Geneid[is.na (res$external_gene_name)]
+res$gene_name [idx2] <- res$Geneid[idx2]
+res$gene_type [idx2] <- "transposon"
+
+for (i in (1:dim (res)[1])) {
+if (res$gene_type[i] == "transposon") {
+#print (res$gene_name[i])
+res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
+}
+}
+
+write.xlsx (res, "striatum_deseq2_tespex_STCTRLvsOTCTRL_injection_differential_expression.xlsx", rowNames=F)
+
+boxplot (res$log2FoldChange)
+abline (h=0)
+
+
+
+## PCA plot
+
+vsd <- vst(dds, blind=FALSE)
+pcaData <- plotPCA(vsd, intgroup=c("genotype"), returnData=TRUE)
+percentVar <- round(100 * attr(pcaData, "percentVar"))
+
+ggplot(pcaData, aes(PC1, PC2, color=genotype, shape=genotype)) +
+  		geom_point(size=3) +
+  		xlab(paste0("PC1: ",percentVar[1],"% variance")) +
+  		ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
+		coord_fixed ()
+
+ggsave ("PCA plot injection experiment.pdf")
+
+
+
+
+
+
 
 
 
