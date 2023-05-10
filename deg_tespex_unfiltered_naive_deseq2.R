@@ -108,7 +108,7 @@ res <- merge (data.frame (res), counts (dds), by="row.names")
 #res <- merge (data.frame (res), round (counts (dds, normalized=TRUE)), by="row.names")
 res <- merge (res, annot, by.x="Row.names", by.y="Geneid", all.x=TRUE)
 colnames (res)[1] <- "Geneid"
-res <- resa <- res[order (res$padj), ]
+res <- resb <- res[order (res$padj), ]
 
 idx2 <- which (is.na (res$external_gene_name))
 res$external_gene_name [idx2] <- res$Geneid[is.na (res$external_gene_name)]
