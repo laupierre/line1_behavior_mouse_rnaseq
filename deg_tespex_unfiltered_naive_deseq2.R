@@ -117,8 +117,7 @@ res$gene_type [idx2] <- "transposon"
 
 for (i in (1:dim (res)[1])) {
 if (res$gene_type[i] == "transposon") {
-print (res$gene_name[i])
-#res$description[i] <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
+#print (res$gene_name[i])
 res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
 }
 }
@@ -148,8 +147,7 @@ res$gene_type [idx2] <- "transposon"
 
 for (i in (1:dim (res)[1])) {
 if (res$gene_type[i] == "transposon") {
-print (res$gene_name[i])
-#res$description[i] <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
+#print (res$gene_name[i])
 res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gene_name[i]]
 }
 }
