@@ -123,7 +123,7 @@ res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gen
 }
 }
 
-write.xlsx (res, "striatum_deseq2_tespex_OTL1vsOTCTRL_injection_differential_expression.xlsx", rowNames=F)
+write.xlsx (res, "striatum_deseq2_tespex_OTSHL1vsOTSHCTRL_injection_differential_expression.xlsx", rowNames=F)
 
 boxplot (res$log2FoldChange)
 abline (h=0)
@@ -153,7 +153,7 @@ res$description[i]  <- annot_trans$transfamily [annot_trans$transname == res$gen
 }
 }
 
-write.xlsx (res, "striatum_deseq2_tespex_STCTRLvsOTCTRL_injection_differential_expression.xlsx", rowNames=F)
+write.xlsx (res, "striatum_deseq2_tespex_STSHCTRLvsOTSHCTRL_injection_differential_expression.xlsx", rowNames=F)
 
 boxplot (res$log2FoldChange)
 abline (h=0)
