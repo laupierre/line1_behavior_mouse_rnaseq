@@ -1,11 +1,11 @@
 ## 210825_A00558_0141_AH232YDMXY
 
-
 library (openxlsx)
 library (DESeq2)
 library (ggplot2)
 library (ggrepel)
 library (pheatmap)
+library (dplyr)
 
 
 anno <- read.delim ("gencode.vM32.annotation.txt")
