@@ -84,7 +84,7 @@ head (deg_up)
 gp_up <- gost(query = deg_up, organism = "mmusculus", numeric_ns = "ENTREZGENE_ACC", sources = c("GO:BP"), exclude_iea=TRUE, evcodes = TRUE, significant = TRUE,
               custom_bg = custom_bg, domain_scope = "custom_annotated")
 gp_up <- gp_up$result[ ,c("term_id", "term_name", "significant", "p_value", "term_size", "query_size", "intersection_size", "parents", "intersection")]
-write.xlsx (gp_up, "striatum_deseq2_tespex_OTSHL1vsSTSHCTRL_injection_gene_ontology_analysis_up_genes.xslx")
+write.xlsx (gp_up, "striatum_deseq2_tespex_OTSHL1vsSTSHCTRL_injection_gene_ontology_analysis_up_genes.xlsx")
 
 
 deg_down <- deg[deg$log2FoldChange < 0, ]
