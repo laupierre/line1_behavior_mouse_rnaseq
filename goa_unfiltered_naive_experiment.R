@@ -1,3 +1,5 @@
+## See https://cran.r-project.org/web/packages/gprofiler2/vignettes/gprofiler2.html
+
 library (gprofiler2)
 library (openxlsx)
 
